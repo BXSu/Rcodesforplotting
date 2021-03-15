@@ -1,0 +1,41 @@
+---
+title: "CumulativeSummaryPlot"
+author: "BXS"
+date: "15/03/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Setting up
+rm(list = ls())
+setwd("C:/Users/xuesu/Dropbox/Sgo acetylation/Data/Imaging/K71RQ cell cycle")
+
+Exp130_2b <- read.csv("C:/Users/xuesu/Dropbox/Sgo acetylation/Data/Imaging/K71RQ cell cycle/130_b.csv")
+Exp130_2a <- read.csv("C:/Users/xuesu/Dropbox/Sgo acetylation/Data/Imaging/K71RQ cell cycle/130_a.csv")
+Exp130_2c <-read.csv("C:/Users/xuesu/Dropbox/Sgo acetylation/Data/Imaging/K71RQ cell cycle/130_c.csv")
+        
+# Open packages
+library(ggplot2)
+library(dplyr)
+library(readxl)
+library(tidyverse)
+
+#Combine data
+summarydf<-bind_rows(Exp130_2a,Exp130_2b,Exp130_2c)
+
+averagedf<-summarydf%>%group_by(Strain,Time)%>%summarise(average=mean(Percentage),sem=sd(Percentage)/sqrt(3))
+write.csv(averagedf,file="C:/Users/xuesu/Dropbox/Sgo acetylation/Data/Imaging/K71RQ cell cycle/130_summary.csv")
+write.csv(summarydf,file="./summarydf.csv")
+
+#Plot graph
+pdf("summary.pdf")
+ggplot(averagedf, aes(x=Time, y=average, group=Strain, color=Strain)) + 
+        geom_line() +
+        geom_point()+
+        geom_errorbar(aes(ymin=average-sem, ymax=average+sem), width=.2,
+                      position=position_dodge(0.05))+
+                              theme_classic()
+
+dev.off()
