@@ -5,12 +5,8 @@ date: "15/03/2021"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 # Setting up
 rm(list = ls())
-setwd("C:/Users/xuesu/Dropbox/Sgo acetylation/Data/Imaging/K71RQ cell cycle")
 
 Exp130_2b <- read.csv("C:/Users/xuesu/Dropbox/Sgo acetylation/Data/Imaging/K71RQ cell cycle/130_b.csv")
 Exp130_2a <- read.csv("C:/Users/xuesu/Dropbox/Sgo acetylation/Data/Imaging/K71RQ cell cycle/130_a.csv")
@@ -31,11 +27,12 @@ write.csv(summarydf,file="./summarydf.csv")
 
 #Plot graph
 pdf("summary.pdf")
-ggplot(averagedf, aes(x=Time, y=average, group=Strain, color=Strain)) + 
+p<-ggplot(averagedf, aes(x=Time, y=average, group=Strain, color=Strain)) + 
         geom_line() +
         geom_point()+
         geom_errorbar(aes(ymin=average-sem, ymax=average+sem), width=.2,
                       position=position_dodge(0.05))+
                               theme_classic()
+print(p)                              
 
 dev.off()
